@@ -2,97 +2,74 @@ import { Vector2 } from "three";
 
 export class Car {
     public position: Vector2;
-    public acceleration: number;
-    public velocity: Vector2;
-    private friction = 0.99;
+    public velocity: Vector2 = new Vector2(0, 0);
+    public acceleration: number = 0;
     public angle: number = 0.5;
-    public direction: Vector2 = new Vector2(1, 0); // Default direction facing right
-    public maxSpeed: number = 2; // Maximum speed of the car
-    public turnSpeed: number = 0.01; // Speed at which the car turns
+    public direction: Vector2 = new Vector2(1, 0);
+
+    public readonly maxSpeed: number = 2;
+    public readonly turnSpeed: number = 0.01;
+    private readonly friction: number = 0.99;
 
     constructor(position: Vector2) {
-        this.position = position;
-        this.acceleration = 0;
-        this.velocity = new Vector2(0, 0);
-    }
-
-    private edgeCheck(): void {
-        // Check if the car is out of bounds and reset position if necessary
-        if (this.position.x < 0) {
-            this.position.x = 0;
-        }
-        if (this.position.x > 800 - 150) {
-            this.position.x = 800 - 150;
-        }
-        if (this.position.y < 0) {
-            this.position.y = 0;
-        }
-        if (this.position.y > 600 - 100) {
-            this.position.y = 600 - 100;
-        }
-
-    }
-
-    public getPosition(): Vector2 {
-        return this.position;
-    }  
-
-    public setPosition(position: Vector2): void {
         this.position = position;
     }
 
     public update(): void {
-        // update the logic for the car
-        this.direction = new Vector2(Math.cos(this.angle), Math.sin(this.angle));
+        this.direction.set(Math.cos(this.angle), Math.sin(this.angle));
+
+        // Movement logic
         this.position.add(this.velocity);
         this.velocity.add(this.direction.clone().multiplyScalar(this.acceleration));
-        this.velocity.clampLength(0, this.maxSpeed); // Limit the speed to a maximum of 5 units
-        this.velocity.multiplyScalar(this.friction); // Apply friction to the acceleration
-        this.acceleration = 0;
+        this.velocity.clampLength(0, this.maxSpeed);
+        this.velocity.multiplyScalar(this.friction);
 
-        this.edgeCheck();
+        this.acceleration = 0; // Reset after applying
     }
 
+
+    public getPosition(): Vector2 {
+        return this.position.clone();
+    }
+
+    public setPosition(position: Vector2): void {
+        this.position.copy(position);
+    }
+
+
     public draw(ctx: CanvasRenderingContext2D): void {
-        if (!ctx) {
-            throw new Error('Failed to get canvas context');
-        }
+        if (!ctx) throw new Error('Canvas context is not available.');
+
         ctx.save();
-
-        // Move origin to the car's position
         ctx.translate(this.position.x, this.position.y);
-
         ctx.rotate(this.angle);
-        // Rotate around the origin (which is now car's position)
-        
-        // Draw the car centered at (0,0)
-        
-        //The chassi of the car
+
+        // Chassis
         ctx.fillStyle = 'blue';
-        ctx.fillRect(-150 / 2, -100 / 2, 150, 100); // width: 150, height: 100
-        
+        ctx.fillRect(-75, -50, 150, 100);
+
+        // Cabin
         ctx.fillStyle = 'darkblue';
-        ctx.fillRect(-150 / 2 + 50, -100 / 2 +5, 90, 90); // width: 150, height: 100
+        ctx.fillRect(-25, -45, 90, 90);
 
-        // the lights of the car
+        // Headlights
         ctx.fillStyle = 'yellow';
-        ctx.fillRect(-150 / 2, -100 / 2, 10, 10); // width: 10, height: 10
- 
-        ctx.fillRect(-150 / 2, -100 / 2 + 90, 10, 10); // width: 10, height: 10
+        ctx.fillRect(-75, -50, 10, 10);
+        ctx.fillRect(-75, 40, 10, 10);
 
+        // Taillights
         ctx.fillStyle = 'red';
-        ctx.fillRect(-150 / 2 + 140, -100 / 2, 10, 10); // width: 10, height: 10
-        
-        ctx.fillRect(-150 / 2 + + 140, -100 / 2 + 90, 10, 10); // width: 10, height: 10
-        
-        // the wheels of the car
-        ctx.fillStyle = 'black';
-        ctx.fillRect(-150 / 2 + 10, -100 / 2 - 5, 30, 5); // width: 10, height: 10
-        ctx.fillRect(-150 / 2 + 10, -100 / 2 + 100, 30, 5); // width: 10, height: 10
-        ctx.fillRect(-150 / 2 + 110, -100 / 2 - 5, 30, 5); // width: 10, height: 10
-        ctx.fillRect(-150 / 2 + 110, -100 / 2 + 100, 30, 5); // width: 10, height: 10
+        ctx.fillRect(65, -50, 10, 10);
+        ctx.fillRect(65, 40, 10, 10);
+        ctx.fillRect(0, 0, 5, 5);
 
-        ctx.stroke();
+        // Wheels
+        ctx.fillStyle = 'black';
+        ctx.fillRect(-65, -55, 30, 5);
+        ctx.fillRect(-65, 105 - 55, 30, 5);
+        ctx.fillRect(35, -55, 30, 5);
+        ctx.fillRect(35, 105 - 55, 30, 5);
+        
         ctx.restore();
     }
 }

@@ -1,29 +1,54 @@
+// PlayerController.ts
+import { Car } from './car';
+import type { Road } from './road';
+import { findClosest } from './util';
+
+// get the current input then let the object handle what to do with it
+
 export class PlayerController {
-    private speed: number;
-    private direction: number;
+    private car: Car;
+    
+    private keys: Record<string, boolean> = {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+    };
 
-    constructor(initialSpeed: number = 0, initialDirection: number = 0) {
-        this.speed = initialSpeed;
-        this.direction = initialDirection;
+
+    constructor(car: Car) {
+        window.addEventListener('keydown', (e) => this.setKey(e.key, true));
+        window.addEventListener('keyup', (e) => this.setKey(e.key, false));
+    
+        this.car = car;
     }
 
-    accelerate(amount: number): void {
-        this.speed += amount;
+    private setKey(key: string, isDown: boolean) {
+        if (this.keys.hasOwnProperty(key)) {
+            this.keys[key] = isDown;
+        }
     }
 
-    brake(amount: number): void {
-        this.speed = Math.max(0, this.speed - amount);
+    public checkRoad(road: Road): boolean {
+        let t = findClosest(road.curve, this.car.getPosition());
+        let closestPoint = road.curve.getPoint(t);
+        let dist = closestPoint.distanceTo(this.car.getPosition());
+        return dist < road.width / 2;
     }
 
-    turn(angle: number): void {
-        this.direction += angle;
+    public edgeCheck(): void {
+        this.car.position.x = Math.max(75, Math.min(800 - 75, this.car.position.x));
+        this.car.position.y = Math.max(75, Math.min(600 - 75, this.car.position.y));
     }
 
-    getSpeed(): number {
-        return this.speed;
-    }
+    public update(): void {
 
-    getDirection(): number {
-        return this.direction;
+        if (this.keys['w']) this.car.acceleration = -0.2;
+        if (this.keys['s']) this.car.acceleration = 0.1;
+
+        const speedFactor = this.car.velocity.length() / this.car.maxSpeed;
+
+        if (this.keys['a']) this.car.angle -= this.car.turnSpeed * speedFactor;
+        if (this.keys['d']) this.car.angle += this.car.turnSpeed * speedFactor;
     }
 }
