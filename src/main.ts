@@ -33,7 +33,7 @@ function draw(): void {
         // movement logic
         car.update();
         
-        camera.x = car.position.x - canvas.width / 2; // refactor to use camera
+        camera.x = car.position.x - canvas.width / 2; // refactor to use camera class
         camera.y = car.position.y - canvas.height / 2;
 
         playerController.update();
@@ -54,8 +54,6 @@ function draw(): void {
         // ctx.fillRect(mouse.x, mouse.y, 2, 2);
         // ctx.fillStyle = 'red';
         // ctx.fill();
-
-
 
     }
     requestAnimationFrame(draw);

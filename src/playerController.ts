@@ -46,9 +46,9 @@ export class PlayerController {
         if (this.keys['w']) this.car.acceleration = -0.2;
         if (this.keys['s']) this.car.acceleration = 0.1;
 
-        const speedFactor = this.car.velocity.length() / this.car.maxSpeed;
+        if (this.keys['a']) this.car.delta = this.car.maxSteeringAngle;
+        if (this.keys['d']) this.car.delta = -this.car.maxSteeringAngle;
 
-        if (this.keys['a']) this.car.angle -= this.car.turnSpeed * speedFactor;
-        if (this.keys['d']) this.car.angle += this.car.turnSpeed * speedFactor;
+        if(!this.keys['a'] && !this.keys['d']) this.car.delta = 0
     }
 }
