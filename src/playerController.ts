@@ -6,7 +6,7 @@ import { findClosest } from './util';
 // get the current input then let the object handle what to do with it
 
 export class PlayerController {
-    private car: Car;
+    public car: Car;
     
     private keys: Record<string, boolean> = {
         w: false,

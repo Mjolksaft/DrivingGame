@@ -1,4 +1,4 @@
-import type { SplineCurve, Vector2 } from "three";
+import { SplineCurve, Vector2 } from "three";
 
 /**
  * Finds the closest t on a line segment to a given point.
@@ -35,4 +35,26 @@ export function findClosest(curve: SplineCurve, position: Vector2): number {
     }
 
     return bestT; 
+}
+
+
+/**
+ * Rotate around another vector
+ */
+
+export function rotateAround(point: Vector2, center: Vector2, angle: number): Vector2 {
+    const s = Math.sin(angle);
+    const c = Math.cos(angle);
+
+        
+    // Translate point to origin
+    const px = point.x - center.x;
+    const py = point.y - center.y;
+    
+    // Rotate
+    const xnew = px * c - py * s;
+    const ynew = px * s + py * c;
+
+    // Translate back
+    return new Vector2(xnew + center.x, ynew + center.y);
 }

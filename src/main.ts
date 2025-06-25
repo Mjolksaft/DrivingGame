@@ -1,6 +1,6 @@
 import { Car } from './car';
 import { PlayerController } from './playerController';
-import { Road } from './road';
+import { RoadManager } from './roadManager';
 import './style.css'
 import * as THREE from 'three';
 
@@ -10,52 +10,80 @@ if (!ctx) {
     throw new Error('Failed to get canvas context');
 }
 
-let debug = true; // Enable debug mode
 const car = new Car(new THREE.Vector2(400, 300));
 const playerController = new PlayerController(car);
-const road = new Road(0, 0, 300, 600);
+const roadManager = new RoadManager(new THREE.Vector2(400, 600));
 
-const mouse = new THREE.Vector2(0,0);
-
-let camera = new THREE.Vector2(0,0);
+const mouse = new THREE.Vector2(0, 0);
+let camera = new THREE.Vector2(0, 0);
 
 window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
 });
 
-function draw(): void {
-    // console.log("current key pressed: ", keys);
+let onRoad = false;
+
+// === FPS Tracking ===
+let lastTime = performance.now();
+let frames = 0;
+let fps = 0;
+let lastFpsUpdate = lastTime;
+const fpsUpdateInterval = 500; // ms
+
+function drawFPS(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.fillStyle = 'black';
+    ctx.font = '16px monospace';
+    ctx.fillText(`FPS: ${fps}`, camera.x + 10, camera.y + 20);
+    ctx.restore();
+}
+
+function draw(now = performance.now()): void {
     if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
 
-        // movement logic
+        // === Game Logic ===
+        if (roadManager.end.distanceTo(playerController.car.position) < 100) {
+            roadManager.generateRoad();
+        }
+
         car.update();
-        
-        camera.x = car.position.x - canvas.width / 2; // refactor to use camera class
+        camera.x = car.position.x - canvas.width / 2;
         camera.y = car.position.y - canvas.height / 2;
 
         playerController.update();
-        // playerController.edgeCheck();
-        if (!playerController.checkRoad(road)) {
-            console.log("Car is off the road");
+
+        roadManager.roads.forEach(road => {
+            if (playerController.checkRoad(road)) {
+                onRoad = true;
+            }
+        });
+
+        if (!onRoad) {
+            console.log("off the road");
         }
-        
-        // draw logic
+        onRoad = false;
+
+        // === Drawing ===
         ctx.save();
-        ctx.translate(-camera.x, -camera.y); // Move the canvas to the camera position
-        road.draw(ctx);
+        ctx.translate(-camera.x, -camera.y);
+        roadManager.draw(ctx);
         car.draw(ctx);
+        drawFPS(ctx);
+
         ctx.restore();
 
-        // for the mouse position
-        // ctx.beginPath();
-        // ctx.fillRect(mouse.x, mouse.y, 2, 2);
-        // ctx.fillStyle = 'red';
-        // ctx.fill();
+        // === FPS Tracking ===
+        frames++;
+        if (now - lastFpsUpdate >= fpsUpdateInterval) {
+            fps = Math.round((frames * 1000) / (now - lastFpsUpdate));
+            frames = 0;
+            lastFpsUpdate = now;
+        }
 
     }
+
     requestAnimationFrame(draw);
 }
 

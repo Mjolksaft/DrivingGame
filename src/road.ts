@@ -1,28 +1,17 @@
 import { SplineCurve } from "three/src/extras/curves/Curves.js";
-import { Vector2 } from "three";
 
 export class Road {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    width: number = 300;
+    height: number = 300;
     curve: SplineCurve;
 
-    constructor(x: number, y: number, width: number, height: number) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    constructor(curve: SplineCurve) {
 
-        // create a spline for the road
-        this.curve = new SplineCurve([ // 800 600
-            new Vector2(300, 650),
-            new Vector2(350, 200),
-            new Vector2(800, 100)
+        this.curve = curve
 
-        ]);
+        this.curve = curve;
     }
-    
+
     draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.strokeStyle = 'white';
