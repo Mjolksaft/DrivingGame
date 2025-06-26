@@ -7,7 +7,8 @@ import { findClosest } from './util';
 
 export class PlayerController {
     public car: Car;
-    
+    public pause = false;
+
     private keys: Record<string, boolean> = {
         w: false,
         a: false,
@@ -36,9 +37,18 @@ export class PlayerController {
         return dist < road.width / 2;
     }
 
+    public isOnRoad(roads: Road[]): boolean {
+        return roads.some(road => this.checkRoad(road));
+    }
+
     public edgeCheck(): void {
         this.car.position.x = Math.max(75, Math.min(800 - 75, this.car.position.x));
         this.car.position.y = Math.max(75, Math.min(600 - 75, this.car.position.y));
+    }
+
+    public pauseGame(): void {
+        // do the pause logic for the car 
+        console.log("Pause the game !")
     }
 
     public update(): void {

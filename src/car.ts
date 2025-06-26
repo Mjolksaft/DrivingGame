@@ -44,7 +44,6 @@ export class Car {
         this.position.copy(position);
     }
 
-
     public draw(ctx: CanvasRenderingContext2D): void {
         if (!ctx) throw new Error('Canvas context is not available.');
 

@@ -2,7 +2,6 @@ import { SplineCurve } from "three/src/extras/curves/Curves.js";
 import { Vector2 } from "three";
 import { Road } from "./road"
 import { rotateAround } from "./util";
-import { pointShadow } from "three/tsl";
 
 export class RoadManager {
     // handles the road logic 
@@ -32,30 +31,35 @@ export class RoadManager {
     public generateRoad(): void {
         let points: Vector2[];
         let angle = 0;
-        let newEnd: Vector2;
         let randomNum = Math.floor(Math.random() * 3);
 
         if (randomNum == 2) {
             points = [
                 new Vector2(this.end.x, this.end.y),
-                new Vector2(this.end.x, this.end.y- 400), 
-                new Vector2(this.end.x + 400, this.end.y - 450) 
+                new Vector2(this.end.x, this.end.y - 800), 
+                new Vector2(this.end.x + 800, this.end.y - 600),
+                new Vector2(this.end.x + 800, this.end.y - 1500),
             ]
-            angle = Math.PI/2;
+            angle = 0;
         } 
         else if (randomNum == 1) {
             points = [ 
                 new Vector2(this.end.x, this.end.y),
                 new Vector2(this.end.x, this.end.y - 400),
-                new Vector2(this.end.x - 400, this.end.y - 450)
+                new Vector2(this.end.x - 800, this.end.y - 600),
+                new Vector2(this.end.x - 800, this.end.y - 1500),
             ]
-            angle = -Math.PI/2;
+            angle = 0;
             
         } 
         else if (randomNum == 0) {
             points = [
                 new Vector2(this.end.x, this.end.y),
-                new Vector2(this.end.x, this.end.y - 800)
+                new Vector2(this.end.x, this.end.y - 500),
+                new Vector2(this.end.x + 50, this.end.y - 1000),
+                new Vector2(this.end.x - 50, this.end.y - 1500),
+                new Vector2(this.end.x, this.end.y - 2000),
+                new Vector2(this.end.x, this.end.y - 2500),
             ]
             angle = 0;
         }
