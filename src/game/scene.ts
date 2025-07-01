@@ -1,9 +1,9 @@
 import { Vector2 } from "three";
-import { Button } from "./button";
+import { Button } from "../util/button";
 import { GameManager } from "./gameManager";
-import { Car } from "./car";
-import { PlayerController } from "./playerController";
-import { RoadManager } from "./roadManager";
+import { Car } from "../player/car";
+import { PlayerController } from "../player/playerController";
+import { RoadManager } from "../road/roadManager";
 
 export abstract class Scene {
 
@@ -155,5 +155,9 @@ export class PauseScene extends Scene {
                 this.gameButton.callFunction();
             }
         });
+
+        window.addEventListener('keydown', (e) => {
+            if(e.key == 'Escape') this.gameManager.swapScene('playing')
+        })
     }
 }

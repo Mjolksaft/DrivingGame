@@ -1,7 +1,7 @@
 import { SplineCurve } from "three/src/extras/curves/Curves.js";
 import { Vector2 } from "three";
-import { Road } from "./road"
-import { rotateAround } from "./util";
+import { Road } from "./roadObject"
+import { rotateAround } from "../util/utility";
 
 export class RoadManager {
     // handles the road logic 
@@ -84,9 +84,8 @@ export class RoadManager {
         this.end = points[points.length-1];
 
         this.roads[this.roads.length] = new Road(curve!);
-
-
     }
+
     public draw(ctx: CanvasRenderingContext2D): void {
         for (let i = 0; i < this.roads.length; i++) {
             const element = this.roads[i];

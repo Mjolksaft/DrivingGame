@@ -1,9 +1,15 @@
 // PlayerController.ts
 import { Car } from './car';
-import type { Road } from './road';
-import { findClosest } from './util';
+import { GameSocket } from '../game/gameSocket';
+import type { Road } from '../road/roadObject';
+import { findClosest } from '../util/utility';
 
 // get the current input then let the object handle what to do with it
+
+
+// abstract class PlayerController {
+
+// }
 
 export class PlayerController {
     public car: Car;
@@ -60,5 +66,11 @@ export class PlayerController {
         if (this.keys['d']) this.car.delta = -this.car.maxSteeringAngle;
 
         if(!this.keys['a'] && !this.keys['d']) this.car.delta = 0
+
+        if (Math.abs(this.car.velocity) > 0.005) {
+            let socket = GameSocket.getInstance();
+            socket.sendMoveMessage({x: this.car.getPosition().x, y: this.car.getPosition().y});
+        }
+
     }
 }

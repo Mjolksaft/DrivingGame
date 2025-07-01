@@ -7,8 +7,6 @@ export class Road {
 
     constructor(curve: SplineCurve) {
 
-        this.curve = curve
-
         this.curve = curve;
     }
 

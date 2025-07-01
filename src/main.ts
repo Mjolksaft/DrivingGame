@@ -1,4 +1,5 @@
-import { GameManager } from './gameManager';
+import { GameManager } from './game/gameManager';
+import { GameSocket } from './game/gameSocket';
 import './style.css'
 
 const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -27,6 +28,7 @@ function drawFPS(ctx: CanvasRenderingContext2D): void {
 function draw(now = performance.now()): void {
     if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 
         gameManager.update();
 
